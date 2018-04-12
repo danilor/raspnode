@@ -1,0 +1,16 @@
+{
+  "name": "raspnode",
+  "version": "1.0.0",
+  "description": "A NODEJS app to connect to Raspberry hardware",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Danilo Ramírez",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "onoff": "^3.0.2",
+    "pigpio": "^1.0.0",
+    "socket.io": "^2.1.0"
+  }
+}

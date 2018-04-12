@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Raspberry Control</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" />
+	<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+	
+	<style>
+		.lightitem{
+			font-size:22px!important;
+		}
+		.light_on{
+			color:blue;
+		}
+		.light_off{
+			color:lightgray;
+		}
+	</style>
+</head>
+<body>
+
+	<div class="container">
+		<div class="row">
+			<div class="col text-center" >
+				<h1><strong>Control Led Light</strong></h1>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col lightitem">
+			
+				<button id='icon_light' class='btn btn-primary' >
+						<i class="fa fa-lightbulb-o"></i> <span>Turn On</span>
+						
+				</button>
+			
+				
+				<!--<input type="checkbox" id="light" />-->
+				
+				
+			</div>
+		</div>
+	</div>
+
+	
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script> <!-- include socket.io client side script -->
+	<script type="text/javascript">
+
+	var socket = io(); //load socket.io-client and connect to the host that serves the page
+
+	var led = 0;
+	
+	$( document ).ready(function( e ){
+		console.log('Page Loads');
+		action();
+		socketConnection();
+	});
+	
+	function action(){
+		var lightbox = document.getElementById("light"); 			
+			$("#icon_light").click(function( e ){
+				if( led === 0 ){ 
+					led = 1; 
+					$( this ).find('span').html('Turn Off');
+				}else{ 
+					led = 0; 
+					$( this ).find('span').html('Turn On');
+				}
+				console.log( 'Changed' ,led );
+				socket.emit("light", led ); //send button status to server (as 1 or 0)
+			});
+	}
+	
+	function socketConnection(){
+		socket.on('light', function (data) { //get button status from client
+				console.log( 'Light Changes' );
+				console.log( data );
+				led = data;
+				if( led === 1 ){ 
+					$("#icon_light").find('span').html('Turn Off');
+				}else{ 
+					$("#icon_light").find('span').html('Turn On');
+				}
+				// document.getElementById("light").checked = led; //change checkbox according to push button on Raspberry Pi
+				console.log( 'Emitting the light status' );
+				socket.emit("light", led); //send push button status to back to server
+			});
+	}
+	
+	</script>
+</body>
+</html>
